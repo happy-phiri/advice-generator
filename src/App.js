@@ -1,23 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useCallback, useEffect, useState } from "react";
+import Card from "./Card";
 
 function App() {
+  const [advice, setAdvice] = useState("");
+
+  const getAdvice = useCallback(async () => {
+    const response = await fetch("https://api.adviceslip.com/advice");
+    const data = await response.json();
+    setAdvice(data.slip);
+  }, []);
+
+  useEffect(() => {
+    getAdvice();
+  }, [getAdvice]);
+
+  const generateNewAdvice = () => {
+    return getAdvice();
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <Card advice={advice} generateNewAdvice={generateNewAdvice} />
     </div>
   );
 }
